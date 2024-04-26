@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME}
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}; ${CMAKE_MODULE_PATH}")
 
-#find_package(Boost REQUIRED)
+find_package(Boost REQUIRED)
 
 #if (Boost_FOUND)
  #   include_directories(${Boost_INCLUDE_DIRS})
