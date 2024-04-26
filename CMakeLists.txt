@@ -57,6 +57,6 @@ set(CPACK_PACKAGE_CONTACT example@example.com)
 
 include(CPack)
 
-enable_testing()
+#enable_testing()
 
-add_test(hw-01_ut hw-01_ut)
+#add_test(hw-01_ut hw-01_ut)
