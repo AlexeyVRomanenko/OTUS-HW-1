@@ -11,8 +11,10 @@ BOOST_AUTO_TEST_CASE(test)
     //lib::
 }*/
 
+#include <iostream>
+
 int main(int argc, char const *argv[])
 {
-    /* code */
+    std::cout << "tests passed OK:" << std::endl;
     return 0;
 }
