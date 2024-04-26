@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28)
 
-project(hw-1_lib VERSION ${PROJECT_VERSION})
+project(library1 VERSION ${PROJECT_VERSION})
 
 add_library(${PROJECT_NAME}
     lib.h

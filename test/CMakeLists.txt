@@ -1,23 +1,34 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28)
 
-project(hw-01_ut VERSION ${PROJECT_VERSION})
+project(test1)
 
 add_executable(${PROJECT_NAME}
     test.cpp
 )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}; ${CMAKE_MODULE_PATH}")
-
-#find_package(Boost REQUIRED)
-
-#if (Boost_FOUND)
- #   include_directories(${Boost_INCLUDE_DIRS})
- #   link_directories(${Boost_LIBRARY_DIRS})
-#endif ()
+target_include_directories(test1
+    PRIVATE
+        ../lib
+)
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        hw-1_lib
+    PRIVATE
+        library1
 )
+
+find_package(Boost REQUIRED)
+
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${Boost_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+       ${Boost_LIBRARIES}
+)
+
+message(${Boost_INCLUDE_DIR})
+message(${Boost_LIBRARY_DIRS})
+message(${Boost_VERSION})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})

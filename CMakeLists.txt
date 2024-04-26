@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28)
 
 set(PATCH_VERSION "2" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(hw-01_exe VERSION ${PROJECT_VERSION})
+project(project1 VERSION ${PROJECT_VERSION})
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -17,27 +17,18 @@ PROPERTIES
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        "${CMAKE_BINARY_DIR}"
-)
-
 add_subdirectory(lib)
 add_subdirectory(test)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
-        lib
-)
-
-target_include_directories(hw-01_ut
-    PRIVATE
+        "${CMAKE_BINARY_DIR}"
         lib
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        hw-1_lib
+        library1
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

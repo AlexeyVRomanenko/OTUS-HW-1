@@ -1,10 +1,13 @@
-
-#include <iostream>
+#define BOOST_TEST_MODULE test1
 #include <lib.h>
 
-int main(int argc, char const *argv[])
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(test1)
+
+BOOST_AUTO_TEST_CASE(test_case)
 {
-    lib::print_hello_world();
-    std::cout << "tests passed OK:" << std::endl;
-    return 0;
+    BOOST_CHECK(1);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
