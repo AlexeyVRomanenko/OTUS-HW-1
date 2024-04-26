@@ -19,3 +19,5 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         hw-1_lib
 )
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})

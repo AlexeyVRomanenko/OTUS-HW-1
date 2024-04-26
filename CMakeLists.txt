@@ -26,7 +26,12 @@ add_subdirectory(lib)
 add_subdirectory(test)
 
 target_include_directories(${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
+        lib
+)
+
+target_include_directories(hw-01_ut
+    PRIVATE
         lib
 )
 
@@ -34,16 +39,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         hw-1_lib
 )
-
-if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        /W4
-    )
-else ()
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-endif()
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
@@ -54,3 +49,5 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT example@example.com)
 
 include(CPack)
+
+enable_testing()
