@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.29)
 set(PATCH_VERSION "2" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(hw-1_exe VERSION ${PROJECT_VERSION})
+project(hw-01_exe VERSION ${PROJECT_VERSION})
 
 add_executable(${PROJECT_NAME}
     main.cpp
