@@ -16,7 +16,7 @@ target_link_libraries(${PROJECT_NAME}
         library1
 )
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS regex unit_test_framework)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -24,7 +24,9 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-       ${Boost_LIBRARIES}
+    PRIVATE
+        Boost::regex
+        Boost::unit_test_framework
 )
 
 message(${Boost_INCLUDE_DIR})
