@@ -43,4 +43,4 @@ include(CPack)
 
 enable_testing()
 
-add_test(Testing test1)
+add_test(Testing ../test/test1)
