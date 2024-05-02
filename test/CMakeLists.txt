@@ -6,7 +6,7 @@ add_executable(${PROJECT_NAME}
     test.cpp
 )
 
-target_include_directories(test1
+target_include_directories(${PROJECT_NAME}
     PRIVATE
         ../lib
 )
@@ -32,3 +32,6 @@ target_link_libraries(${PROJECT_NAME}
 message(${Boost_INCLUDE_DIR})
 message(${Boost_LIBRARY_DIRS})
 message(${Boost_VERSION})
+
+enable_testing()
+add_test(Testing test1)

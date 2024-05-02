@@ -42,5 +42,3 @@ set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
 
 enable_testing()
-
-add_test(Testing ../test/test1)
