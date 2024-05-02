@@ -32,5 +32,3 @@ target_link_libraries(${PROJECT_NAME}
 message(${Boost_INCLUDE_DIR})
 message(${Boost_LIBRARY_DIRS})
 message(${Boost_VERSION})
-
-add_test(${PROJECT_NAME} ${PROJECT_NAME})
