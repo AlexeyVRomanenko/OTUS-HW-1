@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(test1)
+project(utest)
 
 add_executable(${PROJECT_NAME}
     test.cpp
@@ -8,12 +8,12 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
-        ../lib
+        ../ip_parser
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        library1
+        ip_parser
 )
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
@@ -34,4 +34,4 @@ message(${Boost_LIBRARY_DIRS})
 message(${Boost_VERSION})
 
 enable_testing()
-add_test(Testing test1)
+add_test(Testing utest)

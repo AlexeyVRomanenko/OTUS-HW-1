@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "2" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(project1 VERSION ${PROJECT_VERSION})
+project(project VERSION ${PROJECT_VERSION})
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -13,22 +13,22 @@ configure_file(version.h.in version.h)
 
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
-    CXX_STANDARD 14
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
 
-add_subdirectory(lib)
-add_subdirectory(test)
+add_subdirectory(ip_parser)
+add_subdirectory(utest)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${CMAKE_BINARY_DIR}"
-        lib
+        ip_parser
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        library1
+        ip_parser
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
