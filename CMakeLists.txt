@@ -10,11 +10,25 @@ add_executable(${PROJECT_NAME}
 )
 
 configure_file(version.h.in version.h)
+configure_file(ip_filter.tsv ip_filter.tsv COPYONLY)
 
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
+)
+
+find_package(Boost REQUIRED COMPONENTS filesystem)
+
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${Boost_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        #Boost::regex
+        Boost::filesystem
 )
 
 add_subdirectory(ip_parser)
