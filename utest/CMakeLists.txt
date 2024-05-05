@@ -32,6 +32,3 @@ target_link_libraries(${PROJECT_NAME}
 message(${Boost_INCLUDE_DIR})
 message(${Boost_LIBRARY_DIRS})
 message(${Boost_VERSION})
-
-enable_testing()
-add_test(Testing utest)
