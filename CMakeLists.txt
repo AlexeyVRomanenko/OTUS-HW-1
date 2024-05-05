@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
 
 configure_file(version.h.in version.h)
 configure_file(ip_filter.tsv ip_filter.tsv COPYONLY)
+configure_file(md5sum.exe md5sum.exe COPYONLY)
 
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
@@ -19,6 +20,7 @@ PROPERTIES
 )
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(TBB REQUIRED)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -27,7 +29,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        #Boost::regex
+        TBB::tbb
         Boost::filesystem
 )
 
@@ -56,3 +58,4 @@ set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
 
 enable_testing()
+add_test(IP_Filter_Test utest)
