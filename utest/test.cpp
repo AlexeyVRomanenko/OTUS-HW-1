@@ -4,9 +4,6 @@
 #include <ip_parser.h>
 //boost
 #include <boost/test/unit_test.hpp>
-//std
-#include <locale>
-#include <codecvt>
 
 BOOST_AUTO_TEST_SUITE(test1)
 

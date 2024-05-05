@@ -7,7 +7,7 @@ add_library(${PROJECT_NAME}
     ip_parser.cpp
 )
 
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost REQUIRED COMPONENTS filesystem)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -16,7 +16,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Boost::unit_test_framework
+        ${Boost_LIBRARIES}
 )
 
 include(CPack)

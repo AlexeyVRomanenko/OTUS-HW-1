@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 
-//using ip_t = std::tuple<int, int, int, int>;
 using ip_t = std::tuple<unsigned char, unsigned char, unsigned char, unsigned char>;
 
 static std::ostream& operator<<(std::ostream& os, const ip_t& ip)
