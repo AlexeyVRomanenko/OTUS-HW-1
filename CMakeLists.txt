@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "2" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(project VERSION ${PROJECT_VERSION})
+project(ip_filter VERSION ${PROJECT_VERSION})
 
 add_executable(${PROJECT_NAME}
     main.cpp

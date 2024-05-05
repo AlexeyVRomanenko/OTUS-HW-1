@@ -5,7 +5,7 @@
 #include <boost/format.hpp>
 
 #ifdef _DEBUG
-#define DBG_LOG(code) code
+#define DBG_LOG(code)// code
 #else
 #define DBG_LOG(code)
 #endif
