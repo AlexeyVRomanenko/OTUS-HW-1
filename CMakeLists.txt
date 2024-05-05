@@ -30,7 +30,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         TBB::tbb
-        Boost::filesystem
+        ${Boost_LIBRARIES}
 )
 
 add_subdirectory(ip_parser)
