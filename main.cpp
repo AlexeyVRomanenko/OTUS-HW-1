@@ -55,9 +55,9 @@ int main(int, char**)
 			return 1;
 	}
 
-	std::vector<ip_t> parsed_ips_reversed;
+	std::vector<ip_t> parsed_ips_reversed, ips_sorted;
 	{
-		std::vector<ip_t> ips_sorted = ips_parsed;
+		ips_sorted = ips_parsed;
 		std::sort(ips_sorted.begin(), ips_sorted.end());
 
 		parsed_ips_reversed.resize((ips_sorted.size()));
@@ -90,7 +90,7 @@ int main(int, char**)
 		//3. Сразу продолжается список адресов, первый байт которых равен 46, а второй 70. Порядок сортировки не меняется.Одна строка - один адрес.Списки ничем не разделяются.
 		for (const ip_t& ip : parsed_ips_reversed)
 		{
-			if (std::get<0>(ip) == 45 && std::get<1>(ip) == 70) {
+			if (std::get<0>(ip) == 46 && std::get<1>(ip) == 70) {
 				std::cout << ip << std::endl;
 				fstrm << ip << std::endl;
 			}
