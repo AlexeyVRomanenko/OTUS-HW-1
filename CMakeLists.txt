@@ -3,15 +3,13 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "2" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(ip_filter VERSION ${PROJECT_VERSION})
+project(HW-03 VERSION ${PROJECT_VERSION})
 
 add_executable(${PROJECT_NAME}
     main.cpp
 )
 
 configure_file(version.h.in version.h)
-configure_file(ip_filter.tsv ip_filter.tsv COPYONLY)
-configure_file(md5sum.exe md5sum.exe COPYONLY)
 
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
@@ -33,18 +31,15 @@ target_link_libraries(${PROJECT_NAME}
         ${Boost_LIBRARIES}
 )
 
-add_subdirectory(ip_parser)
-add_subdirectory(utest)
+add_subdirectory(test)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${CMAKE_BINARY_DIR}"
-        ip_parser
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        ip_parser
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

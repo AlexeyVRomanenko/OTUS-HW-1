@@ -1,0 +1,11 @@
+#define BOOST_TEST_MODULE test
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(TESTING)
+
+BOOST_AUTO_TEST_CASE(Test 1)
+{
+	BOOST_TEST_MESSAGE("Tests OK.");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
