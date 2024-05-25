@@ -31,7 +31,7 @@ target_link_libraries(${PROJECT_NAME}
         ${Boost_LIBRARIES}
 )
 
-add_subdirectory(test)
+add_subdirectory(tests)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
