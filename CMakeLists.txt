@@ -32,6 +32,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 add_subdirectory(tests)
+add_subdirectory(my_allocator)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -40,6 +41,11 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        my_allocator
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
