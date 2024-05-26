@@ -15,7 +15,13 @@ namespace my
 	{
 		using value_type = T;
 
-		static const uint32_t PRELOC_N = 10;
+		//initial pool
+		std::shared_ptr<void> m_pool;
+		std::size_t m_pool_elems = 0;
+		static constexpr uint32_t PRELOC_N = 10;
+
+		//user
+		std::size_t m_user_elems = -1; //1 - undefined map constructor element
 
 		allocator_10() noexcept :
 			m_pool(::operator new (sizeof(uint8_t)* PRELOC_N), deleter()),
@@ -47,13 +53,6 @@ namespace my
 		{
 			
 		}
-
-		//initial pool
-		std::shared_ptr<void> m_pool;
-		std::size_t m_pool_elems = 0;
-
-		//user
-		std::size_t m_user_elems = -1; //1 - undefined map constructor element
 
 		/*using propagate_on_container_copy_assignment = std::true_type;
 		using propagate_on_container_move_assignment = std::true_type;
