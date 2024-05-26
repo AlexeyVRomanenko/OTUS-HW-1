@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <assert.h>
+
 namespace my
 {
 	struct deleter
@@ -15,43 +18,76 @@ namespace my
 	{
 		using value_type = T;
 
+		//options
+		struct opts {
+			static constexpr uint32_t preloc_n = 10;
+			static constexpr bool extandable = false;
+			static constexpr uint32_t ext_n = 5;
+		};
+
 		//initial pool
-		std::shared_ptr<void> m_pool;
-		std::size_t m_pool_elems = 0;
-		static constexpr uint32_t PRELOC_N = 10;
+		std::shared_ptr<void> m_pre_pool;
+		std::size_t m_pre_pool_n = 0;
 
 		//user
-		std::size_t m_user_elems = -1; //1 - undefined map constructor element
+		std::shared_ptr<void> m_user_pool;
+		std::size_t m_user_pool_n = -1; //1 - undefined map constructor element
+
+		//state
+		std::size_t m_cmn_n = 0;
 
 		allocator_10() noexcept :
-			m_pool(::operator new (sizeof(uint8_t)* PRELOC_N), deleter()),
-			m_pool_elems(PRELOC_N)
+			m_pre_pool(::operator new (sizeof(uint8_t)* opts::preloc_n), deleter()),
+			m_pre_pool_n(opts::preloc_n)
 		{
 		}
 
 		template <class U>
 		allocator_10(const allocator_10<U>& a) noexcept
 		{
-			m_pool = a.m_pool;
-			m_pool_elems = a.m_pool_elems;
+			m_pre_pool = a.m_pre_pool;
+			m_pre_pool_n = a.m_pre_pool_n;
+			m_user_pool = a.m_user_pool;
+			m_user_pool_n = a.m_user_pool_n;
+			m_cmn_n = a.m_cmn_n;
 		}
 
 		T* allocate(std::size_t n)
 		{
-			if ((m_user_elems + n) > m_pool_elems)
+			if ((m_cmn_n + n) > m_pre_pool_n)
 			{
-				throw std::bad_alloc();
-				return nullptr;
+				if (opts::extandable)
+				{
+					if (m_user_pool)
+					{
+						assert(m_user_pool_n == 0);
+
+						std::shared_ptr<void> new_pool(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::ext_n)), deleter());
+						memcpy(new_pool.get(), m_user_pool.get(), sizeof(sizeof(uint8_t) * (m_user_pool_n)));
+						m_user_pool = new_pool;
+						m_user_pool_n += opts::ext_n;
+					}
+					else
+					{
+						m_user_pool.reset(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::ext_n)));
+						m_user_pool_n += opts::ext_n;
+					}
+				}
+				else
+				{
+					throw std::bad_alloc();
+					return nullptr;
+				}
 			}
 
-			m_user_elems += n;
+			m_cmn_n += n;
 
 			return static_cast<T*>(::operator new(n * sizeof(T)));
 		}
 
 		void deallocate(T* p, std::size_t n)
 		{
-			
+
 		}
 
 		/*using propagate_on_container_copy_assignment = std::true_type;
