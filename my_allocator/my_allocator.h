@@ -14,15 +14,15 @@ namespace my
 	};
 
 	template <class T>
-	struct allocator_10
+	struct allocator
 	{
 		using value_type = T;
 
 		//options
 		struct opts {
-			static constexpr uint32_t preloc_n = 10;
-			static constexpr bool extandable = false;
-			static constexpr uint32_t ext_n = 5;
+			static uint32_t preloc_n;
+			static bool extendable;
+			static uint32_t extloc_n;
 		};
 
 		//initial pool
@@ -36,14 +36,14 @@ namespace my
 		//state
 		std::size_t m_cmn_n = 0;
 
-		allocator_10() noexcept :
+		allocator() noexcept :
 			m_pre_pool(::operator new (sizeof(uint8_t)* opts::preloc_n), deleter()),
 			m_pre_pool_n(opts::preloc_n)
 		{
 		}
 
 		template <class U>
-		allocator_10(const allocator_10<U>& a) noexcept
+		allocator(const allocator<U>& a) noexcept
 		{
 			m_pre_pool = a.m_pre_pool;
 			m_pre_pool_n = a.m_pre_pool_n;
@@ -56,21 +56,21 @@ namespace my
 		{
 			if ((m_cmn_n + n) > m_pre_pool_n)
 			{
-				if (opts::extandable)
+				if (opts::extendable)
 				{
 					if (m_user_pool)
 					{
 						assert(m_user_pool_n == 0);
 
-						std::shared_ptr<void> new_pool(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::ext_n)), deleter());
+						std::shared_ptr<void> new_pool(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::extloc_n)), deleter());
 						memcpy(new_pool.get(), m_user_pool.get(), sizeof(sizeof(uint8_t) * (m_user_pool_n)));
 						m_user_pool = new_pool;
-						m_user_pool_n += opts::ext_n;
+						m_user_pool_n += opts::extloc_n;
 					}
 					else
 					{
-						m_user_pool.reset(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::ext_n)));
-						m_user_pool_n += opts::ext_n;
+						m_user_pool.reset(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::extloc_n)), deleter());
+						m_user_pool_n += opts::extloc_n;
 					}
 				}
 				else
@@ -96,13 +96,13 @@ namespace my
 	};
 
 	template <class T, class U>
-	constexpr bool operator== (const allocator_10<T>& a1, const allocator_10<U>& a2) noexcept
+	constexpr bool operator== (const allocator<T>& a1, const allocator<U>& a2) noexcept
 	{
 		return true;
 	}
 
 	template <class T, class U, unsigned int PREDEF_N>
-	constexpr bool operator!= (const allocator_10<T>& a1, const allocator_10<U>& a2) noexcept
+	constexpr bool operator!= (const allocator<T>& a1, const allocator<U>& a2) noexcept
 	{
 		return false;
 	}
