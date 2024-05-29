@@ -1,13 +1,6 @@
 #define BOOST_TEST_MODULE test
 #include <boost/test/unit_test.hpp>
 
-#include <map>
-#include <string>
-
-#include <boost/math/special_functions/factorials.hpp>
-
-#include <my_allocator.h>
-
 BOOST_AUTO_TEST_SUITE(TESTING)
 
 BOOST_AUTO_TEST_CASE(Test_1)

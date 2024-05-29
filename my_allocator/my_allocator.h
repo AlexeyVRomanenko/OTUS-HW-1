@@ -31,7 +31,7 @@ namespace my
 
 		//user
 		std::shared_ptr<void> m_user_pool;
-		std::size_t m_user_pool_n = -1; //1 - undefined map constructor element
+		std::size_t m_user_pool_n = 0; //1 - undefined map constructor element
 
 		//state
 		std::size_t m_cmn_n = 0;
@@ -63,7 +63,6 @@ namespace my
 						assert(m_user_pool_n == 0);
 
 						std::shared_ptr<void> new_pool(::operator new (sizeof(uint8_t) * (m_user_pool_n + opts::extloc_n)), deleter());
-						memcpy(new_pool.get(), m_user_pool.get(), sizeof(sizeof(uint8_t) * (m_user_pool_n)));
 						m_user_pool = new_pool;
 						m_user_pool_n += opts::extloc_n;
 					}

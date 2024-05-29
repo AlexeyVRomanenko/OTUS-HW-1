@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <type_traits>
 
 namespace my
 {
@@ -7,35 +8,72 @@ namespace my
 	class vector
 	{
 	public:
+		typedef vector<T, Allocator> this_type;
+		typedef T value_type;
+		typedef T* iterator;
+		typedef const T* const_iterator;
+
 		vector()
 		{
+		}
 
+		~vector()
+		{
+		}
+
+		iterator begin() const
+		{
+			return m_data;
+		}
+
+		const_iterator cbegin() const
+		{
+			return m_data;
+		}
+
+		iterator end() const
+		{
+			return m_data + m_size;
+		}
+
+		const_iterator cend() const
+		{
+			return m_data + m_size;
 		}
 
 		void push_back(const T& x)
 		{
 			if (m_size == m_capacity)
 			{
+				const size_t old_size = size();
+				const size_t new_size = old_size + 1;
+
+				T* old_data = m_data;
 				const size_t old_capacity = m_capacity;
 
-				m_capacity = m_capacity * 2 + 1;
+				this_type new_vector;
+				new_vector.alloc(m_capacity * 2 + 1);
+				new_vector.copy_construct(new_vector.begin(), new_vector.begin() + old_size, begin());
+				new_vector.copy_construct(new_vector.begin() + old_size, new_vector.begin() + new_size, &x);
+				new_vector.m_size = new_size;
+				swap(new_vector);
 
-				T* new_data = m_allocator.allocate(m_capacity);
-				for (size_t i = 0; i <= m_size; ++i)
 				{
-					if (i == m_size)
-						new_data[i] = x;
-					else
-						new_data[i] = m_data[i];
+					m_allocator.deallocate(old_data, old_capacity);
 				}
-
-				m_allocator.deallocate(m_data, old_capacity);
-
-				m_data = new_data;
 			}
+			else
+			{
+				++m_size;
+				copy_construct(end() - 1, end(), &x);
+			}
+		}
 
-			//m_allocator.construct(m_data + m_size * sizeof(T), x);
-			++m_size;
+		void swap(this_type& a)
+		{
+			std::swap(m_capacity, a.m_capacity);
+			std::swap(m_size, a.m_size);
+			std::swap(m_data, a.m_data);
 		}
 
 		bool empty() const
@@ -48,43 +86,22 @@ namespace my
 			return m_size;
 		}
 
-		template <class T>
-		class iterator
+	private:
+		void alloc(const size_t& cap)
 		{
-		public:
-			using value_type = T;
-			using iterator_category = std::output_iterator_tag;
-			using difference_type = std::ptrdiff_t;
-			using reference = T&;
-			using const_reference = const reference;
+			m_data = m_allocator.allocate(cap);
+			m_capacity = cap;
+		}
 
-			iterator() noexcept = default;
-			iterator(const iterator& other) noexcept = default;
-			iterator& operator=(const iterator& other) noexcept = default;
-			iterator(value_type* ptr) noexcept : m_ptr(ptr) {}
-
-			reference operator*() noexcept {
-				return *m_ptr;
+		template <typename src_iterator_t>
+		void copy_construct(iterator dest_begin, const_iterator dest_end, src_iterator_t src_begin) const
+		{
+			iterator i_dest = dest_begin;
+			src_iterator_t i_src = src_begin;
+			for (; i_dest != dest_end; ++i_dest, ++i_src) {
+				::new (i_dest) value_type(*i_src);
 			}
-
-			const_reference operator*() const noexcept {
-				return *m_ptr;
-			}
-
-			iterator& operator++() noexcept {
-				++m_ptr;
-				return *this;
-			}
-
-			iterator operator++(int) noexcept {
-				iterator temp = *this;
-				++(*this);
-				return temp;
-			}
-
-		private:
-			value_type* m_ptr = nullptr;
-		};
+		}
 
 	private:
 		std::size_t m_size = 0;
