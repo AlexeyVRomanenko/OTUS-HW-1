@@ -52,7 +52,7 @@ namespace my
 				const size_t old_capacity = m_capacity;
 
 				this_type new_vector;
-				new_vector.alloc(m_capacity * 2 + 1);
+				new_vector.alloc(m_capacity + 1/* 2 + 1*/); //capacity step policy
 				new_vector.copy_construct(new_vector.begin(), new_vector.begin() + old_size, begin());
 				new_vector.copy_construct(new_vector.begin() + old_size, new_vector.begin() + new_size, &x);
 				new_vector.m_size = new_size;
