@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(my_allocator VERSION ${PROJECT_VERSION})
+project(my_lib VERSION ${PROJECT_VERSION})
 
 add_library(${PROJECT_NAME} INTERFACE
-    my_allocator.h
-    my_vector.h)
+    "my_traits.h"
+    )
 target_include_directories(${PROJECT_NAME} INTERFACE .)
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
