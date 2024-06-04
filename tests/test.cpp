@@ -5,31 +5,33 @@
 
 #include <my_traits.h>
 
+
 ///////////////////////////////////////////////////////////
 
-struct cout_redirect {
+struct cout_redirect
+{
 	cout_redirect(std::streambuf* new_buffer)
 		: old(std::cout.rdbuf(new_buffer))
-	{ }
+	{
+	}
 
-	~cout_redirect() {
+	~cout_redirect()
+	{
 		std::cout.rdbuf(old);
 	}
 
 private:
-	std::streambuf* old;
+	std::streambuf* old = nullptr;
 };
 
 void BOOST_CHECK_COUT(const std::function<void()>& fn, const char* ref_str)
 {
+	boost::test_tools::output_test_stream output;
 	{
-		boost::test_tools::output_test_stream output;
-		{
-			cout_redirect guard(output.rdbuf());
-			fn();
-		}
-		BOOST_CHECK(output.is_equal(ref_str));
+		cout_redirect guard(output.rdbuf());
+		fn();
 	}
+	BOOST_CHECK(output.is_equal(ref_str));
 }
 
 ///////////////////////////////////////////////////////////
@@ -44,6 +46,11 @@ BOOST_AUTO_TEST_CASE(Test_1)
 	BOOST_CHECK_COUT([]() { my::print_ip(int32_t{ 2130706433 }); }, "127.0.0.1\n");
 	BOOST_CHECK_COUT([]() { my::print_ip(int64_t{ 8875824491850138409 }); }, "123.45.67.89.101.112.131.41\n");
 	BOOST_CHECK_COUT([]() { my::print_ip("Hello, World!"s); }, "Hello, World!\n");
+	BOOST_CHECK_COUT([]() { my::print_ip(std::vector<int>{100, 200, 300, 400}); }, "100.200.300.400\n");
+	BOOST_CHECK_COUT([]() { my::print_ip(std::list<short>{400, 300, 200, 100}); }, "400.300.200.100\n");
+	BOOST_CHECK_COUT([]() { my::print_ip(std::make_tuple(123, 456, 789, 0)); }, "123.456.789.0\n");
+
+	my::printTuple(std::make_tuple(123, 456, 789, 0));
 
 	BOOST_TEST_MESSAGE("Tests OK.");
 }
