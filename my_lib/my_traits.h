@@ -1,11 +1,17 @@
 #pragma once
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <type_traits>
 #include <vector>
+#include <list>
 #include <tuple>
+#include <iterator>
+#include <xutility>
 
 namespace my
 {
+	//integer
 	template<class T, typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
 	void print_ip(T val)
 	{
@@ -17,44 +23,61 @@ namespace my
 		std::cout << (int)arr[0] << std::endl;
 	};
 
+	//string
 	template<class T, typename std::enable_if_t<std::is_convertible_v<T, std::string>, bool> = true>
 	void print_ip(T&& val)
 	{
 		std::cout << val << std::endl;
 	}
 
-	/*template<typename Test, template<typename...> class Ref>
+	//vector && list
+	template<typename Test, template<typename...> class Ref>
 	struct is_specialization : std::false_type {};
 	template<template<typename...> class Ref, typename... Args>
 	struct is_specialization<Ref<Args...>, Ref> : std::true_type {};
 	template<class T>
-	constexpr bool is_vector = is_specialization<std::vector<T>, std::vector>::value;
+	constexpr bool is_vector = is_specialization<T, std::vector>::value;
 	template<class T>
-	constexpr bool is_list = is_specialization<std::list<T>, std::list> ::value;
+	constexpr bool is_list = is_specialization<T, std::list>::value;
 
-	template<typename T, typename std::enable_if_t<is_vector<T> || is_list<T>, bool> = true>
+	template<typename T, typename std::enable_if_t<is_vector<T> || is_list<T>, bool> = true, typename ...Args>
 	void print_ip(T&& v)
 	{
-		for (const T::value_type& i : v)
-			std::cout << i << '.';
+		if constexpr (std::random_access_iterator<decltype(v.cbegin())>)
+		{
+			for (auto it = v.cbegin(); it != v.cend(); ++it)
+			{
+				if (it == v.cend() - 1)
+					std::cout << *it << std::endl;
 
-		std::cout << std::endl;
-	}*/
+				else
+					std::cout << *it << '.';
+			}
+		}
+		else
+		{
+			for (const auto& i : v)
+			{
+				if (&i == &v.back())
+					std::cout << i << std::endl;
+				else
+					std::cout << i << '.';
+			}
+		}
+	}
 
-	template <class T>
+	/*template <class T>
 	struct is_vector : std::false_type {};
 	template <class ...Args>
 	struct is_vector<std::vector<Args...>> : std::true_type {};
 	template <class T>
 	constexpr bool is_vector_v = is_vector<T>::value;
-
 	template <class T>
 	struct is_list : std::false_type {};
 	template <class ...Args>
 	struct is_list<std::list<Args...>> : std::true_type {};
 	template <class T>
 	constexpr bool is_list_v = is_list<T>::value;
-
 	template<class T, typename std::enable_if_t<is_list_v<T> || is_vector_v<T>, bool> = true>
 	void print_ip(T&& val)
 	{
@@ -65,20 +88,18 @@ namespace my
 			else
 				std::cout << i << '.';
 		}
-	}
+	}*/
 
+	//tuple (magic)
 	template <class Type, class ...Args>
 	struct check_type : std::false_type {};
-	
 	template <class Type>
 	struct check_type <Type> : std::true_type {};
-	
 	template <class Type, class ...Args>
 	struct check_type<Type, Type, Args...>
 	{
 		constexpr static bool value = check_type<Type, Args...>::value;
 	};
-
 	template <class T>
 	struct is_one_type_tuple : std::false_type {};
 	template <>
@@ -92,26 +113,7 @@ namespace my
 	void print_ip(T&& val)
 	{
 		std::stringstream sstrm;
-		//std::apply([&sstrm](const auto& ...arg) { ((sstrm << arg << '.'), ...); }, val);
+		std::apply([&sstrm](const auto& ...arg) { ((sstrm << arg << '.'), ...); }, val);
 		std::cout << sstrm.str() << std::endl;
-	}
-
-	template <typename TupleT, std::size_t... Is>
-	void printTupleImp(const TupleT& tp, std::index_sequence<Is...>) {
-		size_t index = 0;
-		auto printElem = [&index](const auto& x) {
-			if (index++ > 0)
-				std::cout << ", ";
-			std::cout << x;
-			};
-
-		std::cout << "(";
-		(printElem(std::get<Is>(tp)), ...);
-		std::cout << ")";
-	}
-
-	template <typename TupleT, std::size_t TupSize = std::tuple_size_v<TupleT>>
-	void printTuple(const TupleT& tp) {
-		printTupleImp(tp, std::make_index_sequence<TupSize>{});
 	}
 }

@@ -16,6 +16,12 @@ target_link_libraries(${PROJECT_NAME}
            my_lib
 )
 
+set_target_properties(${PROJECT_NAME}
+PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED ON
+)
+
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 target_include_directories(${PROJECT_NAME}
