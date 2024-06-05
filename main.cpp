@@ -1,6 +1,11 @@
 #include <iostream>
 #include <my_traits.h>
 
+/**
+ * \brief MY DOXY Doc
+ *  111222
+ */
+
 int main(int, char**)
 {
 	my::print_ip(int8_t{ -1 });
