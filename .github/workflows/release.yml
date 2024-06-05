@@ -1,4 +1,4 @@
-name: 'C++ CI HW-04'
+name: 'C++ OTUS'
 
 on:
   push:
@@ -39,13 +39,11 @@ jobs:
           asset_path: ./print_ip-0.1.${{ github.run_number }}-Linux.deb
           asset_name: print_ip-0.1.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
-
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@v1.1.0
         with:
             doxyfile-path: ./Doxyfile
             working-directory: .
-    
       - name: GH Pages Deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
