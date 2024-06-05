@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -43,26 +42,12 @@ namespace my
 	template<typename T, typename std::enable_if_t<is_vector<T> || is_list<T>, bool> = true, typename ...Args>
 	void print_ip(T&& v)
 	{
-		if constexpr (std::random_access_iterator<decltype(v.cbegin())>)
+		for (const auto& i : v)
 		{
-			for (auto it = v.cbegin(); it != v.cend(); ++it)
-			{
-				if (it == v.cend() - 1)
-					std::cout << *it << std::endl;
-
-				else
-					std::cout << *it << '.';
-			}
-		}
-		else
-		{
-			for (const auto& i : v)
-			{
-				if (&i == &v.back())
-					std::cout << i << std::endl;
-				else
-					std::cout << i << '.';
-			}
+			if (&i == &v.back())
+				std::cout << i << std::endl;
+			else
+				std::cout << i << '.';
 		}
 	}
 
@@ -81,13 +66,6 @@ namespace my
 	template<class T, typename std::enable_if_t<is_list_v<T> || is_vector_v<T>, bool> = true>
 	void print_ip(T&& val)
 	{
-		for (const auto& i : val)
-		{
-			if (&i == &val.back())
-				std::cout << i << std::endl;
-			else
-				std::cout << i << '.';
-		}
 	}*/
 
 	//tuple (magic)
@@ -112,8 +90,8 @@ namespace my
 	template<class T, typename std::enable_if_t<is_one_type_tuple_v<T>, bool> = true>
 	void print_ip(T&& val)
 	{
-		std::stringstream sstrm;
-		std::apply([&sstrm](const auto& ...arg) { ((sstrm << arg << '.'), ...); }, val);
-		std::cout << sstrm.str() << std::endl;
+		std::string str;
+		std::apply([&str](const auto& ...arg) { ((std::cout << str << arg, str = "."), ...); }, val);
+		std::cout << std::endl;
 	}
 }
