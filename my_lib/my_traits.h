@@ -8,6 +8,10 @@
 #include <iterator>
 #include <xutility>
 
+/**
+	my doxygen documentation 
+ */
+
 namespace my
 {
 	//integer
