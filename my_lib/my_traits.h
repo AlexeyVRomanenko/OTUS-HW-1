@@ -8,13 +8,15 @@
 #include <iterator>
 
 /**
- * MY DOC
- * MY DOC
+ * \brief MY DOXY Doc
+ *
  */
 
 namespace my
 {
-	//integer
+	/// integer
+	/// \details integer
+
 	template<class T, typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
 	void print_ip(T val)
 	{
@@ -26,14 +28,14 @@ namespace my
 		std::cout << (int)arr[0] << std::endl;
 	};
 
-	//string
+	/// string
 	template<class T, typename std::enable_if_t<std::is_convertible_v<T, std::string>, bool> = true>
 	void print_ip(T&& val)
 	{
 		std::cout << val << std::endl;
 	}
 
-	//vector && list
+	/// vector && list
 	template<typename Test, template<typename...> class Ref>
 	struct is_specialization : std::false_type {};
 	template<template<typename...> class Ref, typename... Args>
@@ -72,7 +74,7 @@ namespace my
 	{
 	}*/
 
-	//tuple (magic)
+	/// tuple (magic)
 	template <class Type, class ...Args>
 	struct check_type : std::false_type {};
 	template <class Type>
