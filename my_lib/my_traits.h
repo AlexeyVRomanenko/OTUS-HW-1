@@ -8,7 +8,8 @@
 #include <iterator>
 
 /**
-	my doxygen documentation 
+ * MY DOC
+ * MY DOC
  */
 
 namespace my
