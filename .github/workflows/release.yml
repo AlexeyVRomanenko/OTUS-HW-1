@@ -36,8 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./HW-04-0.1.${{ github.run_number }}-Linux.deb
-          asset_name: HW-04-0.1.${{ github.run_number }}-Linux.deb
+          asset_path: ./print_ip-0.1.${{ github.run_number }}-Linux.deb
+          asset_name: print_ip-0.1.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
 
       - name: Doxygen Action
