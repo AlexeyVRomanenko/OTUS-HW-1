@@ -10,6 +10,7 @@ public:
 	//IApp
 	virtual editor::IDocumentPtr CreateNewDocument() override;
 	virtual editor::IDocumentPtr ImportDocument(const fs::path& file) override;
+	virtual size_t GetDocumentsCount() const override;
 
 private:
 	App() = default;

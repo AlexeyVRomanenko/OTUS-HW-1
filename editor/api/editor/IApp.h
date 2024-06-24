@@ -9,5 +9,6 @@ namespace editor
 	public:
 		virtual IDocumentPtr CreateNewDocument() = 0;
 		virtual IDocumentPtr ImportDocument(const std::filesystem::path& file) = 0;
+		virtual size_t GetDocumentsCount() const = 0;
 	};
 }

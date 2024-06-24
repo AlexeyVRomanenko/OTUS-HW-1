@@ -3,7 +3,7 @@
 
 LinePtr Line::Instance(const editor::point2d& p1, const editor::point2d& p2)
 {
-	return LinePtr{ new Line(p1, p1) };
+	return LinePtr{ new Line(p1, p2) };
 }
 
 Line::Line(const editor::point2d& p1, const editor::point2d& p2) :

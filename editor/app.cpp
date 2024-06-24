@@ -24,3 +24,8 @@ editor::IDocumentPtr App::ImportDocument(const fs::path& file)
 
 	return doc;
 }
+
+size_t App::GetDocumentsCount() const
+{
+	return m_documents.size();
+}

@@ -13,6 +13,6 @@ editor::shape_tag Shape::GetTag() const
 
 editor::shape_tag Shape::CreateNewTag()
 {
-	editor::shape_tag tag = {};
+	static editor::shape_tag tag = {};
 	return ++tag;
 }
