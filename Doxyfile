@@ -1,7 +1,7 @@
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "print_ip"
+PROJECT_NAME           = "editor"
 PROJECT_NUMBER         = 1.0
-PROJECT_BRIEF          = "OTUS HW-04"
+PROJECT_BRIEF          = "OTUS HW-05"
 OUTPUT_DIRECTORY       = ./doc/
 OUTPUT_LANGUAGE        = English
 GENERATE_LATEX         = NO
