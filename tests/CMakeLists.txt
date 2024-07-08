@@ -14,7 +14,7 @@ PROPERTIES
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        editor
+        matrix
 )
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)

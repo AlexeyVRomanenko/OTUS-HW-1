@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(hw-05 VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(hw-06 VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -18,21 +18,11 @@ PROPERTIES
 )
 
 add_subdirectory(tests)
-add_subdirectory(editor)
-
-find_package(Boost REQUIRED COMPONENTS filesystem)
-find_package(TBB REQUIRED)
-
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${Boost_INCLUDE_DIR}
-)
+add_subdirectory(matrix)
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        TBB::tbb
-        ${Boost_LIBRARIES}
-        editor
+        matrix
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

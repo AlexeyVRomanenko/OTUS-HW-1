@@ -1,17 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(editor VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(matrix VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME}
-    app.cpp
-    document.cpp
-    editor.cpp
-    shapes/shapes.cpp
-    shapes/shape.cpp
-    shapes/point.cpp
-    shapes/line.cpp
-    shapes/circle.cpp
-    shapes/rectangle.cpp
+    matrix.cpp
 )
 
  set_target_properties(${PROJECT_NAME}
@@ -24,27 +16,12 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         api
     PRIVATE
-        .  
-        shapes
-        api/shapes
+        .
 )
 
 target_precompile_headers(${PROJECT_NAME}
     PUBLIC
         pch.h
-)
-
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${CMAKE_BINARY_DIR}
-        ${Boost_INCLUDE_DIR}
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        ${Boost_LIBRARIES}
 )
 
 set(CPACK_GENERATOR DEB)
