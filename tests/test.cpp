@@ -9,5 +9,20 @@ BOOST_AUTO_TEST_CASE(Test_1)
 {
 	boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_messages);
 
-	matrix::IAppPtr app = matrix::Create(-1);
+	//1
+	{
+		matrix::Matrix mtx = matrix::Matrix(0);
+
+		for (int i = 0; i <= 9; ++i)
+		{
+			mtx[i][i] = i;
+			BOOST_CHECK(mtx[i][i] == i);
+		}
+
+		for (int r = 9, c = 0; r <= 0; --r, ++c)
+		{
+			mtx[r][c] = r;
+			BOOST_CHECK(mtx[r][c] == r);
+		}
+	}
 }

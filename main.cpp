@@ -1,10 +1,12 @@
 #include <iostream>
 
-#include <matrix/matrix.h>
+//#include <matrix/matrix.h>
 
 int main(int, char**)
 {
-	matrix::IMatrixPtr mtx = matrix::Create(-1);
+	//matrix::Matrix mtx = matrix::Matrix(-1.0);
+
+
 
 	return 0;
 }
