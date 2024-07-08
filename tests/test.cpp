@@ -24,5 +24,13 @@ BOOST_AUTO_TEST_CASE(Test_1)
 			mtx[r][c] = r;
 			BOOST_CHECK(mtx[r][c] == r);
 		}
+
+		for (int r = 0; r <= 9; ++r)
+		{
+			for (int c = 0; c <= 9; ++c)
+			{
+				mtx[r][c];
+			}
+		}
 	}
 }
