@@ -3,8 +3,6 @@
 
 using namespace matrix;
 
-using item_path_t = std::vector<Matrix::index_type>;
-
 template <>
 struct std::hash<item_path_t>
 {
@@ -18,14 +16,14 @@ struct std::hash<item_path_t>
 	}
 };
 
-using matrix_t = std::unordered_map<item_path_t, Matrix::value_type>;
+using matrix_t = std::unordered_map<item_path_t, value_type>;
 
 /////////////////////////////////////////////////////////////////
 
 class matrix::MatrixProxy
 {
 public:
-	MatrixProxy(Matrix::value_type def_val) :
+	MatrixProxy(value_type def_val) :
 		m_def_val(def_val)
 	{
 	}
@@ -35,7 +33,7 @@ public:
 		return m_matrix.size();
 	}
 
-	Matrix::value_type get(const item_path_t& p) const
+	value_type get(const item_path_t& p) const
 	{
 		const auto i = m_matrix.find(p);
 		if (i != m_matrix.end())
@@ -44,28 +42,34 @@ public:
 		return m_def_val;
 	}
 
-	void set(const item_path_t& p, Matrix::value_type v)
+	void set(const item_path_t& p, value_type v)
 	{
-		m_matrix[p] = v;
+		if (v == m_def_val)
+			m_matrix.erase(p);
+		else
+			m_matrix[p] = v;
 	}
 
-	void erase(const item_path_t& p)
+	std::vector<item_path_t> get_all() const
 	{
-		m_matrix.erase(p);
+		std::vector<item_path_t> items;
+		items.reserve(m_matrix.size());
+		for (const auto& i : m_matrix)
+			items.push_back(i.first);
+
+		return items;
 	}
 
 private:
 	matrix_t m_matrix;
 
-	const Matrix::value_type m_def_val = {};
+	const value_type m_def_val = {};
 };
 
 //////////////////////////////////////////////////////////
 
 class matrix::MatrixItemProxy
 {
-	friend matrix::MatrixProxy;
-
 public:
 	MatrixItemProxy(matrix::MatrixProxy* matrix, const item_path_t& path) :
 		m_matrix(matrix),
@@ -73,12 +77,12 @@ public:
 	{
 	}
 
-	void set(Matrix::value_type v)
+	void set(value_type v)
 	{
 		m_matrix->set(m_path, v);
 	}
 
-	Matrix::value_type get()
+	value_type get()
 	{
 		return m_matrix->get(m_path);
 	}
@@ -94,13 +98,12 @@ private:
 ////////////////////////////////////////////////////////////////////////////
 
 Matrix::Matrix(value_type def_val) :
-	m_matrix(new matrix::MatrixProxy(def_val))
+	m_matrix(std::make_shared<matrix::MatrixProxy>(def_val))
 {
 }
 
 Matrix::~Matrix()
 {
-	delete m_matrix;
 }
 
 size_t Matrix::size() const
@@ -108,38 +111,48 @@ size_t Matrix::size() const
 	return m_matrix->size();
 }
 
-Matrix::Item Matrix::operator[](index_type i)
+Item Matrix::operator[](index_type i)
 {
-	Matrix::Item item(new matrix::MatrixItemProxy(m_matrix, item_path_t{ i }));
+	Item item(new matrix::MatrixItemProxy(m_matrix.get(), item_path_t{i}));
 	return item;
+}
+
+std::vector<Item> Matrix::GetItems() const
+{
+	std::vector<Item> items;
+	for (const item_path_t& p : m_matrix->get_all())
+	{
+		Item item(new matrix::MatrixItemProxy(m_matrix.get(), p));
+		items.push_back(item);
+	}
+	return items;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-Matrix::Item::Item(MatrixItemProxy* item) :
+Item::Item(MatrixItemProxy* item) :
 	m_item(item)
 {
 }
 
-Matrix::Item::~Item()
+Item::~Item()
 {
-	delete m_item;
 }
 
-Matrix::Item Matrix::Item::operator[](index_type i)
+Item Item::operator[](index_type i)
 {
 	item_path_t path = m_item->path();
 	path.push_back(i);
-	Matrix::Item item(new matrix::MatrixItemProxy(m_item->matrix(), path));
+	Item item(new matrix::MatrixItemProxy(m_item->matrix(), path));
 	return item;
 }
 
-void Matrix::Item::operator=(value_type v)
+void Item::operator=(value_type v)
 {
 	m_item->set(v);
 }
 
-bool Matrix::Item::operator==(value_type v) const
+Item::operator value_type ()
 {
-	return m_item->get() == v;
+	return m_item->get();
 }
