@@ -12,17 +12,15 @@ namespace matrix
 
 	class Item
 	{
-	public:
-		Item(MatrixItemProxy*);
-		~Item();
+		friend class Matrix;
 
+	public:
 		Item operator[](index_type);
 		void operator=(value_type);
 		operator value_type ();
 
-		item_path_t pos() const;
-
 	private:
+		Item(MatrixItemProxy*);
 		std::shared_ptr<MatrixItemProxy> m_item;
 	};
 
@@ -32,13 +30,10 @@ namespace matrix
 	{
 	public:
 		Matrix(value_type def_val);
-		~Matrix();
 
 		size_t size() const;
-
 		Item operator[](index_type);
-
-		std::vector<Item> GetItems() const;
+		void for_each(const std::function<void(const item_path_t&, value_type)>&);
 
 	private:
 		std::shared_ptr<MatrixProxy> m_matrix;

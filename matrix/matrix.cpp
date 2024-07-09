@@ -102,10 +102,6 @@ Matrix::Matrix(value_type def_val) :
 {
 }
 
-Matrix::~Matrix()
-{
-}
-
 size_t Matrix::size() const
 {
 	return m_matrix->size();
@@ -117,25 +113,16 @@ Item Matrix::operator[](index_type i)
 	return item;
 }
 
-std::vector<Item> Matrix::GetItems() const
+void Matrix::for_each(const std::function<void(const item_path_t&, value_type)>& fn)
 {
-	std::vector<Item> items;
-	for (const item_path_t& p : m_matrix->get_all())
-	{
-		Item item(new matrix::MatrixItemProxy(m_matrix.get(), p));
-		items.push_back(item);
-	}
-	return items;
+	for (const auto& i : m_matrix->get_all())
+		fn(i, m_matrix->get(i));
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
 Item::Item(MatrixItemProxy* item) :
 	m_item(item)
-{
-}
-
-Item::~Item()
 {
 }
 
