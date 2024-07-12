@@ -3,6 +3,9 @@
 #include <map>
 #include <chrono>
 using time_t_ = std::chrono::time_point<std::chrono::system_clock>;
+#include <filesystem>
+#include <fstream>
+#include <boost/format.hpp>
 
 #include <back/back.h>
 #include <front/ifront.h>
@@ -38,8 +41,8 @@ private:
 				if (!m_block)
 				{
 					m_block = std::make_shared<Block>(std::weak_ptr<Block>());
-					//m_block->child = std::make_shared<Block>(m_block);
-					m_work_block = m_block/*->child*/;
+					m_block->child = std::make_shared<Block>(m_block);
+					m_work_block = m_block->child;
 				}
 				else
 				{
@@ -52,13 +55,11 @@ private:
 		{
 			if (!m_work_block.expired())
 			{
+				m_work_block = m_work_block.lock()->parent;
+
 				if (m_work_block.lock()->parent.expired())
 				{
 					flush();
-				}
-				else
-				{
-					m_work_block = m_work_block.lock()->parent;
 				}
 			}
 		}
@@ -94,17 +95,15 @@ private:
 	{
 		if (!m_front.expired())
 		{
-			std::stringstream stream;
-			stream << "bulk: ";
-
-			const std::function<void(const Block* block)> print_cmds = [&stream, &print_cmds](const Block* block)
+			std::map<time_t_, std::string> cmds;
+			const std::function<void(const Block* block)> print_cmds = [&cmds, &print_cmds](const Block* block)
 				{
 					if (!block)
 						return;
 
 					for (const auto& cmd : block->cmds)
 					{
-						stream << cmd.second << "\t";
+						cmds.insert(cmd);
 					}
 
 					print_cmds(block->child.get());
@@ -112,8 +111,26 @@ private:
 
 			print_cmds(m_block.get());
 
+			std::stringstream stream;
+			stream << "bulk: ";
+			for (const auto& cmd : cmds)
+			{
+				if (&cmd != &*cmds.begin())
+					stream << ", ";
+
+				stream << cmd.second;
+			}
+
 			m_front.lock()->Out(stream.str().c_str());
 			m_front.lock()->Out("\n");
+
+			const std::string out_file = (std::filesystem::current_path() / std::to_string(std::chrono::time_point_cast<std::chrono::milliseconds>(cmds.cbegin()->first).time_since_epoch().count())).replace_extension("log").string();
+
+			std::ofstream fstrm(out_file, std::ios::out);
+			if (fstrm)
+			{
+				fstrm << stream.str();
+			}
 		}
 
 		m_block.reset();

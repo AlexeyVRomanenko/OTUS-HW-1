@@ -27,10 +27,6 @@ target_link_libraries(${PROJECT_NAME}
         front
 )
 
-find_package(Boost REQUIRED COMPONENTS program_options)
-target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
-
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
