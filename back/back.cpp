@@ -6,6 +6,7 @@ using time_t_ = std::chrono::time_point<std::chrono::system_clock>;
 #include <filesystem>
 #include <fstream>
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <back/back.h>
 #include <front/ifront.h>
@@ -25,10 +26,12 @@ public:
 private:
 	void OnEnter(const char* _cmd)
 	{
-		if (!_cmd || strlen(_cmd) == 0)
+		if (!_cmd)
 			return;
 
 		const std::string cmd = _cmd;
+		if (cmd.empty())
+			return;
 
 		if (cmd == "{")
 		{
@@ -63,14 +66,14 @@ private:
 				}
 			}
 		}
-		else if (stricmp(cmd.c_str(), "exit") == 0)
+		else if (boost::iequals(cmd.c_str(), "exit"))
 		{
 			if (!m_front.expired())
 			{
 				m_front.lock()->Break();
 			}
 		}
-		else if (stricmp(cmd.c_str(), "eof") == 0)
+		else if (boost::iequals(cmd.c_str(), "eof") == 0)
 		{
 			flush();
 		}
