@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(matrix VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(front VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME}
-    matrix.cpp
+    front.cpp
 )
 
  set_target_properties(${PROJECT_NAME}
@@ -22,18 +22,6 @@ target_include_directories(${PROJECT_NAME}
 target_precompile_headers(${PROJECT_NAME}
     PUBLIC
         pch.h
-)
-
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${Boost_INCLUDE_DIR}
-)
-
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        ${Boost_LIBRARIES}
 )
 
 set(CPACK_GENERATOR DEB)

@@ -14,7 +14,8 @@ PROPERTIES
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        matrix
+        front
+        back
 )
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
@@ -28,10 +29,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${Boost_LIBRARIES}
 )
-
-message(${Boost_INCLUDE_DIR})
-message(${Boost_LIBRARY_DIRS})
-message(${Boost_VERSION})
 
 enable_testing()
 add_test(${PROJECT_NAME} ${PROJECT_NAME})

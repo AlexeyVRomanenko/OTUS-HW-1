@@ -1,64 +1,31 @@
 #include <iostream>
-#include <matrix/matrix.h>
+#include <string>
+#include <front/front.h>
+#include <back/back.h>
 
-int main(int, char**)
+constexpr const uint32_t DEF_N = 3;
+
+int main(int ac, char** av)
 {
+	uint32_t N = {};
+	if (ac == 1)
 	{
-		matrix::Matrix mtx = matrix::Matrix(0);
-
-		//1
-		for (int i = 0; i <= 9; ++i)
-			mtx[i][i] = i;
-
-		//2
-		for (int r = 9, c = 0; r >= 0; --r, ++c)
-			mtx[r][c] = r;
-
-		//3
-		for (int r = 1; r <= 8; ++r)
+		try
 		{
-			for (int c = 1; c <= 8; ++c)
-				std::cout << mtx[r][c] << ' ';
-
-			std::cout << std::endl;
+			N = std::stoul(av[0]);
 		}
-
-		//4
-		std::cout << mtx.size() << std::endl;
-
-		//5
-		for (int r = 0; r <= 9; ++r)
+		catch (...)
 		{
-			for (int c = 0; c <= 9; ++c)
-				std::cout << "[" << r << ";" << c << "]=" << mtx[r][c] << '\t';
-
-			std::cout << std::endl;
+			N = DEF_N;
 		}
-
-		//all items
-		mtx.for_each([](const matrix::item_path_t& path, matrix::value_type value)
-			{
-				std::cout << '[';
-				for (const auto& p : path)
-				{
-					std::cout << p;
-					if (&p != &path.back())
-						std::cout << ';';
-				}
-				std::cout << ']';
-				std::cout << '=' << value;
-				std::cout << std::endl;
-			});
-
-		//reset
-		mtx[1][1] = 0;
 	}
 
-	//N-dimention
-	{
-		matrix::Matrix mtx = matrix::Matrix(0);
-		mtx[1][2][3][4][5] = 7;
-	}
+	std::cout << N << std::endl;
+
+	std::shared_ptr<front::IFront> front = front::CreateFront();
+	std::shared_ptr<back::IBack> back = back::CreateBack(front, N);
+
+	front->Run();
 
 	return 0;
 }
