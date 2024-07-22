@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(hw-06 VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(hw-08 VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -18,11 +18,11 @@ PROPERTIES
 )
 
 add_subdirectory(tests)
-add_subdirectory(matrix)
+add_subdirectory(ffinder)
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        matrix
+    PRIVATE
+        ffinder
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

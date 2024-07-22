@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(matrix VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(ffinder VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME}
-    matrix.cpp
+    ffinder.cpp
 )
 
  set_target_properties(${PROJECT_NAME}
@@ -15,8 +15,6 @@ PROPERTIES
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         api
-    PRIVATE
-        .
 )
 
 target_precompile_headers(${PROJECT_NAME}
