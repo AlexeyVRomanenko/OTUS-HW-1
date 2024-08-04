@@ -34,7 +34,11 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 			(BLOCK_SIZE.data(), po::value<char>(), "Block size for files reading")
 			(HASH_ALORITHM.data(), po::value<char>(), "Hash algorithm");
 
+#ifdef _WIN32
 		po::command_line_parser po_parser(po::split_winmain(cmd_line));
+#else
+		po::command_line_parser po_parser(po::split_unix(cmd_line));		
+#endif
 		po_parser
 			.options(po_desc)
 			.allow_unregistered()
