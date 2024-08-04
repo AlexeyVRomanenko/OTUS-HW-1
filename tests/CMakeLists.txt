@@ -6,6 +6,9 @@ add_executable(${PROJECT_NAME}
     test.cpp
 )
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_dirs
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
     CXX_STANDARD 17
