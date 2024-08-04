@@ -93,6 +93,8 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_FILE_MASKs = opt->second.as<std::vector<std::string>>();
 	}
 
+	std::vector<std::vector<std::string>> filtered_dirs_files;
+
 	for (const auto& dir : _DIRs)
 	{
 		std::vector<std::string> files_to_compare;
@@ -122,7 +124,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 
 		if (!files_to_compare.empty())
 		{
-			m_dirs_equal_files.emplace_back(std::move(files_to_compare));
+			filtered_dirs_files.emplace_back(std::move(files_to_compare));
 		}
 	}
 
@@ -130,6 +132,42 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 	if (auto opt = opts.find(HASH_ALORITHM.data()); opt != opts.end())
 	{
 		_HASH_ALORITHM = opt->second.as<char>();
+	}
+
+	const auto FILES_COMPARER = [](const std::string& file1, const std::string& file2)
+		{
+			io::mapped_file_source f1(file1);
+			io::mapped_file_source f2(file2);
+			return  f1.size() == f2.size() && std::equal(f1.data(), f1.data() + f1.size(), f2.data());
+		};
+
+	for (const auto& dir : filtered_dirs_files)
+	{
+		std::unordered_set<std::string> checker;
+		std::vector<std::string> equal_files;
+		for (const auto& file1 : dir)
+		{
+			for (const auto& file2 : dir)
+			{
+				if (file1 == file2)
+					continue;
+
+				if (FILES_COMPARER(file1, file2))
+				{
+					if (checker.contains(file1))
+						continue;
+
+					equal_files.push_back(file1);
+					equal_files.push_back(file2);
+					checker.insert({ file1, file2 });
+				}
+			}
+		}
+
+		if (!equal_files.empty())
+		{
+			m_dirs_equal_files.emplace_back(std::move(equal_files));
+		}
 	}
 
 	return true;

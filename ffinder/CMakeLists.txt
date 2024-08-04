@@ -22,7 +22,7 @@ target_precompile_headers(${PROJECT_NAME}
         pch.h
 )
 
-find_package(Boost REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost REQUIRED COMPONENTS filesystem program_options iostreams)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE

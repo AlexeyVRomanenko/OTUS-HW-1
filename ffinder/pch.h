@@ -12,3 +12,5 @@
 namespace po = boost::program_options;
 #include <filesystem>
 namespace fs = std::filesystem;
+#include <boost/iostreams/device/mapped_file.hpp>
+namespace io = boost::iostreams;
