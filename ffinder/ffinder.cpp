@@ -37,7 +37,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 #ifdef _WIN32
 		po::command_line_parser po_parser(po::split_winmain(cmd_line));
 #else
-		po::command_line_parser po_parser(po::split_unix(cmd_line));		
+		po::command_line_parser po_parser(po::split_unix(cmd_line));
 #endif
 		po_parser
 			.options(po_desc)
@@ -59,7 +59,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_RECURSION = opt->second.as<int>();
 	}
 
-	std::unordered_set<std::string> _DIRs;
+	std::unordered_set<fs::path> _DIRs;
 	if (auto opt = opts.find(DIR.data()); opt != opts.end())
 	{
 		std::vector<std::string> dirs = opt->second.as<std::vector<std::string>>();
@@ -71,7 +71,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 				for (const fs::directory_entry& d : fs::recursive_directory_iterator(dir))
 				{
 					if (d.is_directory())
-						_DIRs.insert(d.path().string());
+						_DIRs.insert(d.path());
 				}
 			}
 		}
@@ -85,7 +85,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		}
 	}
 
-	int _MIN_FILE_SIZE = 0;
+	int _MIN_FILE_SIZE = 8;
 	if (auto opt = opts.find(MIN_FILE_SIZE.data()); opt != opts.end())
 	{
 		_MIN_FILE_SIZE = opt->second.as<int>();
@@ -97,11 +97,10 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_FILE_MASKs = opt->second.as<std::vector<std::string>>();
 	}
 
-	std::vector<std::vector<std::string>> filtered_dirs_files;
-
+	std::vector<std::vector<fs::path>> filtered_dirs_files;
 	for (const auto& dir : _DIRs)
 	{
-		std::vector<std::string> files_to_compare;
+		std::vector<fs::path> files_to_compare;
 		for (const fs::directory_entry& f : fs::directory_iterator(dir))
 		{
 			if (f.is_regular_file())
@@ -114,13 +113,13 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 						{
 							if (f.path().stem().string().find(mask) != std::string::npos)
 							{
-								files_to_compare.push_back(f.path().string());
+								files_to_compare.push_back(f.path());
 							}
 						}
 					}
 					else
 					{
-						files_to_compare.push_back(f.path().string());
+						files_to_compare.push_back(f.path());
 					}
 				}
 			}
@@ -138,39 +137,56 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_HASH_ALORITHM = opt->second.as<char>();
 	}
 
-	const auto FILES_COMPARER = [](const std::string& file1, const std::string& file2)
-		{
-			io::mapped_file_source f1(file1);
-			io::mapped_file_source f2(file2);
-			return  f1.size() == f2.size() && std::equal(f1.data(), f1.data() + f1.size(), f2.data());
-		};
-
-	for (const auto& dir : filtered_dirs_files)
+	bool compare_full_data = true;
+	if (compare_full_data)
 	{
-		std::unordered_set<std::string> checker;
-		std::vector<std::string> equal_files;
-		for (const auto& file1 : dir)
-		{
-			for (const auto& file2 : dir)
+		const auto FILES_COMPARER = [](const fs::path& file1, const fs::path& file2)
 			{
-				if (file1 == file2)
-					continue;
+				io::mapped_file_source f1(file1.string());
+				io::mapped_file_source f2(file2.string());
+				return  f1.size() == f2.size() && std::equal(f1.data(), f1.data() + f1.size(), f2.data());
+			};
 
-				if (FILES_COMPARER(file1, file2))
+		for (const auto& dir : filtered_dirs_files)
+		{
+			std::unordered_set<fs::path> checker;
+			std::vector<fs::path> equal_files;
+			for (const auto& file1 : dir)
+			{
+				for (const auto& file2 : dir)
 				{
-					if (checker.contains(file1))
+					if (file1 == file2)
 						continue;
 
-					equal_files.push_back(file1);
-					equal_files.push_back(file2);
-					checker.insert({ file1, file2 });
+					if (FILES_COMPARER(file1, file2))
+					{
+						if (checker.contains(file1))
+							continue;
+
+						equal_files.push_back(file1);
+						equal_files.push_back(file2);
+						checker.insert({ file1, file2 });
+					}
 				}
 			}
-		}
 
-		if (!equal_files.empty())
+			if (!equal_files.empty())
+			{
+				m_dirs_equal_files.emplace_back(std::move(equal_files));
+			}
+		}
+	}
+	else
+	{
+		for (const auto& dir : filtered_dirs_files)
 		{
-			m_dirs_equal_files.emplace_back(std::move(equal_files));
+			FilesComparer comparer(dir);
+
+			std::vector<fs::path> equal_files = comparer.GetEqualFiles();
+			if (!equal_files.empty())
+			{
+				m_dirs_equal_files.emplace_back(std::move(equal_files));
+			}
 		}
 	}
 
@@ -179,7 +195,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 
 std::string FilesDuplicateFinder::GetOutput() const
 {
-	std::string out;
+	fs::path out;
 	for (const auto& dir : m_dirs_equal_files)
 	{
 		for (const auto& file : dir)
@@ -193,5 +209,77 @@ std::string FilesDuplicateFinder::GetOutput() const
 		out += "\n";
 	}
 
-	return out; //rvo
+	return out.string(); //rvo
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+FilesComparer::FilesComparer(const std::vector<fs::path>& files)
+{
+	for (const auto& file1 : files)
+	{
+		for (const auto& file2 : files)
+		{
+			if (file1 == file2)
+				continue;
+
+			blocks_t& blocks1 = m_file_blocks[file1];
+			blocks_t& blocks2 = m_file_blocks[file2];
+
+			unsigned int block_index = 0;
+			bool equal = false;
+			while (!equal)
+			{
+				block_hash_t block_hash1 = 0;
+				if (blocks1.size() <= block_index) {
+					block_hash1 = get_block_hash(read_next_file_block(file1));
+					blocks1.push_back(block_hash1);
+				}
+				else {
+					block_hash1 = blocks1[block_index];
+				}
+
+				block_hash_t block_hash2 = 0;
+				if (blocks2.size() <= block_index) {
+					block_hash2 = get_block_hash(read_next_file_block(file2));
+					blocks2.push_back(block_hash2);
+				}
+				else {
+					block_hash2 = blocks2[block_index];
+				}
+
+				if (block_hash1 != block_hash2)
+				{
+					continue;
+				}
+
+				block_index++;
+			}
+		}
+	}
+}
+
+FilesComparer::block_t FilesComparer::read_next_file_block(const fs::path& file)
+{
+	std::fstream& fstr = m_files[file];
+	if (!fstr.is_open())
+	{
+		fstr.open(file);
+	}
+
+	std::vector<char> block(100, 0);
+	fstr.read(block.data(), block.size());
+	return block;
+}
+
+FilesComparer::block_hash_t FilesComparer::get_block_hash(const block_t& block)
+{
+	size_t seed = 0;
+	boost::hash_combine(seed, block);
+	return seed;
+}
+
+const std::vector<fs::path>& FilesComparer::GetEqualFiles() const
+{
+	return m_equal_files;
 }

@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(Test_1)
 			if (!cmd_line.empty())
 				cmd_line += " ";
 
-			cmd_line += (boost::format(R"(--%s=%i)") % ffinder::MIN_FILE_SIZE.data() % 19539).str();
+			cmd_line += (boost::format(R"(--%s=%i)") % ffinder::MIN_FILE_SIZE.data() % 1/*byte*/).str();
 		}
 
 		//5 ffinder::FILE_MASK
