@@ -225,14 +225,8 @@ FilesComparer::FilesComparer(const std::vector<fs::path>& files, int block_size)
 {
 	for (const auto& file1 : files)
 	{
-		if (m_equal_files.contains(file1))
-			continue;
-
 		for (const auto& file2 : files)
 		{
-			if (m_equal_files.contains(file2))
-				continue;
-
 			if (file1 == file2)
 				continue;
 
