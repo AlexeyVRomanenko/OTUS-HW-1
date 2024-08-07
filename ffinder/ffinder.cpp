@@ -31,7 +31,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 			(RECURSION.data(), po::value<int>(), "level of scanning")
 			(MIN_FILE_SIZE.data(), po::value<int>(), "minimal file size")
 			(FILE_MASK.data(), po::value<std::vector<std::string>>()->multitoken(), "Mask of file allowed for scanning")
-			(BLOCK_SIZE.data(), po::value<char>(), "Block size for files reading")
+			(BLOCK_SIZE.data(), po::value<int>(), "Block size for files reading")
 			(HASH_ALORITHM.data(), po::value<char>(), "Hash algorithm");
 
 #ifdef _WIN32
@@ -91,6 +91,12 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_MIN_FILE_SIZE = opt->second.as<int>();
 	}
 
+	int _BLOCK_SIZE = 1000;
+	if (auto opt = opts.find(BLOCK_SIZE.data()); opt != opts.end())
+	{
+		_BLOCK_SIZE = opt->second.as<int>();
+	}
+
 	std::vector<std::string> _FILE_MASKs;
 	if (auto opt = opts.find(FILE_MASK.data()); opt != opts.end())
 	{
@@ -137,7 +143,7 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 		_HASH_ALORITHM = opt->second.as<char>();
 	}
 
-	bool compare_full_data = true;
+	bool compare_full_data = false;
 	if (compare_full_data)
 	{
 		const auto FILES_COMPARER = [](const fs::path& file1, const fs::path& file2)
@@ -180,12 +186,12 @@ bool FilesDuplicateFinder::Init(const char* cmd_line)
 	{
 		for (const auto& dir : filtered_dirs_files)
 		{
-			FilesComparer comparer(dir);
+			FilesComparer comparer(dir, _BLOCK_SIZE);
 
-			std::vector<fs::path> equal_files = comparer.GetEqualFiles();
+			std::set<fs::path> equal_files = comparer.GetEqualFiles();
 			if (!equal_files.empty())
 			{
-				m_dirs_equal_files.emplace_back(std::move(equal_files));
+				m_dirs_equal_files.push_back({ equal_files.begin(), equal_files.end() });
 			}
 		}
 	}
@@ -214,12 +220,19 @@ std::string FilesDuplicateFinder::GetOutput() const
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-FilesComparer::FilesComparer(const std::vector<fs::path>& files)
+FilesComparer::FilesComparer(const std::vector<fs::path>& files, int block_size) :
+	m_block_size(block_size)
 {
 	for (const auto& file1 : files)
 	{
+		if (m_equal_files.contains(file1))
+			continue;
+
 		for (const auto& file2 : files)
 		{
+			if (m_equal_files.contains(file2))
+				continue;
+
 			if (file1 == file2)
 				continue;
 
@@ -227,22 +240,37 @@ FilesComparer::FilesComparer(const std::vector<fs::path>& files)
 			blocks_t& blocks2 = m_file_blocks[file2];
 
 			unsigned int block_index = 0;
-			bool equal = false;
-			while (!equal)
+			while (true)
 			{
+				//file1
 				block_hash_t block_hash1 = 0;
 				if (blocks1.size() <= block_index) {
-					block_hash1 = get_block_hash(read_next_file_block(file1));
-					blocks1.push_back(block_hash1);
+
+					const block_t next_block = read_next_file_block(file1);
+					if (next_block.empty()) {
+						block_hash1 = 0;
+					}
+					else {
+						block_hash1 = get_block_hash(next_block);
+						blocks1.push_back(block_hash1);
+					}
 				}
 				else {
 					block_hash1 = blocks1[block_index];
 				}
 
+				//file2
 				block_hash_t block_hash2 = 0;
 				if (blocks2.size() <= block_index) {
-					block_hash2 = get_block_hash(read_next_file_block(file2));
-					blocks2.push_back(block_hash2);
+					const block_t next_block = read_next_file_block(file2);
+					if (next_block.empty()) {
+						block_hash2 = 0;
+					}
+					else
+					{
+						block_hash2 = get_block_hash(next_block);
+						blocks2.push_back(block_hash2);
+					}
 				}
 				else {
 					block_hash2 = blocks2[block_index];
@@ -250,7 +278,15 @@ FilesComparer::FilesComparer(const std::vector<fs::path>& files)
 
 				if (block_hash1 != block_hash2)
 				{
-					continue;
+					//!not equal
+					break;
+				}
+
+				if (block_hash1 == 0 && block_hash2 == 0)
+				{
+					//!equal
+					m_equal_files.insert({ file1, file2 });
+					break;
 				}
 
 				block_index++;
@@ -266,8 +302,15 @@ FilesComparer::block_t FilesComparer::read_next_file_block(const fs::path& file)
 	{
 		fstr.open(file);
 	}
+	else
+	{
+		if (fstr.eof())
+		{
+			return {};
+		}
+	}
 
-	std::vector<char> block(100, 0);
+	std::vector<char> block(m_block_size, 0);
 	fstr.read(block.data(), block.size());
 	return block;
 }
@@ -279,7 +322,7 @@ FilesComparer::block_hash_t FilesComparer::get_block_hash(const block_t& block)
 	return seed;
 }
 
-const std::vector<fs::path>& FilesComparer::GetEqualFiles() const
+const std::set<fs::path>& FilesComparer::GetEqualFiles() const
 {
 	return m_equal_files;
 }

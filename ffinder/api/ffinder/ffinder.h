@@ -33,14 +33,16 @@ namespace ffinder
 	class FilesComparer
 	{
 	public:
-		FilesComparer(const std::vector<fs::path>& files);
+		FilesComparer(const std::vector<fs::path>& files, int block_size);
 
-		const std::vector<fs::path>& GetEqualFiles() const;
+		const std::set<fs::path>& GetEqualFiles() const;
 
 	private:
 		using block_t = std::vector<char>;
 		using block_hash_t = size_t;
 		using blocks_t = std::vector<block_hash_t>;
+
+		const int m_block_size = 100;
 
 		static block_hash_t get_block_hash(const block_t&);
 		block_t read_next_file_block(const fs::path&);
@@ -49,6 +51,6 @@ namespace ffinder
 		std::unordered_map<fs::path, std::fstream> m_files;
 
 		//result
-		std::vector<fs::path> m_equal_files;
+		std::set<fs::path> m_equal_files;
 	};
 }

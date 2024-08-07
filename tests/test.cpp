@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(Test_1)
 			if (!cmd_line.empty())
 				cmd_line += " ";
 
-			cmd_line += (boost::format(R"(--%s=%s)") % ffinder::BLOCK_SIZE.data() % "S").str();
+			cmd_line += (boost::format(R"(--%s=%i)") % ffinder::BLOCK_SIZE.data() % 5000).str();
 		}
 
 		//6 ffinder::HASH_ALORITHM
