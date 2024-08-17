@@ -73,9 +73,9 @@ private:
 				m_front.lock()->Break();
 			}
 		}
-		else if (boost::iequals(cmd.c_str(), "eof") == 0)
+		else if (boost::iequals(cmd.c_str(), "eof"))
 		{
-			flush();
+			//flush();
 		}
 		else
 		{
