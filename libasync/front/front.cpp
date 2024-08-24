@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <front/front.h>
 #include <front/ifront.h>
+#include <cstring>
 
 class Front :
 	public front::IFront
@@ -23,7 +24,7 @@ public:
 			std::lock_guard lock_buff(m_buff_mutex);
 			if (m_buff)
 			{
-				if (size_t size = strlen(out); size > 0 && m_buff_used_size + size <= m_buff_size)
+				if (size_t size = std::strlen(out); size > 0 && m_buff_used_size + size <= m_buff_size)
 				{
 					memcpy(m_buff + m_buff_used_size, out, size);
 					m_buff_used_size += size;
