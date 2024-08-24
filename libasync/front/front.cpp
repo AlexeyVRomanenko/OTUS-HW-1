@@ -26,7 +26,7 @@ public:
 			{
 				if (size_t size = std::strlen(out); size > 0 && m_buff_used_size + size <= m_buff_size)
 				{
-					memcpy(m_buff + m_buff_used_size, out, size);
+					std::memcpy(m_buff + m_buff_used_size, out, size);
 					m_buff_used_size += size;
 				}
 			}
