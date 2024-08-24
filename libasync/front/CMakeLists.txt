@@ -4,7 +4,7 @@ project(front VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME}
     front.cpp
-)
+ )
 
  set_target_properties(${PROJECT_NAME}
 PROPERTIES
@@ -23,6 +23,11 @@ target_precompile_headers(${PROJECT_NAME}
     PUBLIC
         pch.h
 )
+
+find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(TBB REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE TBB::tbb ${Boost_LIBRARIES} tasks_thread)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")

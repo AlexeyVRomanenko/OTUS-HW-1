@@ -14,8 +14,6 @@ PROPERTIES
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        front
-        back
 )
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)

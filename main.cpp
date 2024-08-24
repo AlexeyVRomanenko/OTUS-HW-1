@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
-#include <front/front.h>
-#include <back/back.h>
+#include <libasync.h>
 
 constexpr const uint32_t DEF_N = 3;
 
@@ -21,12 +20,12 @@ int main(int ac, char** av)
 		}
 	}
 
-	//std::cout << N << std::endl;
+	const libasync::context_t c = libasync::connect(N);
 
-	std::shared_ptr<front::IFront> front = front::CreateFront();
-	std::shared_ptr<back::IBack> back = back::CreateBack(front, N);
+	std::string buffer(1e6, 0);
+	libasync::receive(c, buffer.data(), buffer.size());
 
-	front->Run();
+	libasync::disconnect(c);
 
 	return 0;
 }

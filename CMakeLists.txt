@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.1.${PATCH_VERSION})
 
-project(bulk VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(exe VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -17,14 +17,11 @@ PROPERTIES
     CXX_STANDARD_REQUIRED ON
 )
 
-add_subdirectory(tests)
-add_subdirectory(front)
-add_subdirectory(back)
+add_subdirectory(libasync)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        back
-        front
+       libasync
 )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

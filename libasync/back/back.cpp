@@ -10,6 +10,7 @@ using time_t_ = std::chrono::time_point<std::chrono::system_clock>;
 
 #include <back/back.h>
 #include <front/ifront.h>
+#include <tasks_thread.h>
 
 class Back :
 	public back::IBack
@@ -20,11 +21,11 @@ public:
 		m_N(N)
 	{
 		if (!m_front.expired())
-			m_front.lock()->ConnectToEnter(std::bind(&Back::OnEnter, this, std::placeholders::_1));
+			m_front.lock()->ConnectToEnter(std::bind(&Back::OnEnter, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
 private:
-	void OnEnter(const char* _cmd)
+	void OnEnter(threads_pool& threads, const char* _cmd)
 	{
 		if (!_cmd)
 			return;
@@ -37,7 +38,7 @@ private:
 		{
 			if (!m_work_block.expired() && m_work_block.lock()->parent.expired())
 			{
-				flush();
+				flush(threads);
 			}
 
 			{
@@ -62,7 +63,7 @@ private:
 
 				if (m_work_block.lock()->parent.expired())
 				{
-					flush();
+					flush(threads);
 				}
 			}
 		}
@@ -89,12 +90,12 @@ private:
 
 			if (m_work_block.lock()->parent.expired() && m_work_block.lock()->cmds.size() == m_N)
 			{
-				flush();
+				flush(threads);
 			}
 		}
 	}
 
-	void flush()
+	void flush(threads_pool& threads)
 	{
 		if (!m_front.expired())
 		{
@@ -124,16 +125,26 @@ private:
 				stream << cmd.second;
 			}
 
-			m_front.lock()->Out(stream.str().c_str());
-			m_front.lock()->Out("\n");
+			const std::string output = stream.str();
 
-			const std::string out_file = (std::filesystem::current_path() / std::to_string(std::chrono::time_point_cast<std::chrono::milliseconds>(cmds.cbegin()->first).time_since_epoch().count())).replace_extension("log").string();
+			threads[0]->perform_task([front = m_front.lock(), output]()
+				{
+					front->Out(output.c_str());
+					front->Out("\n");
+				}
+			);
 
-			std::ofstream fstrm(out_file, std::ios::out);
-			if (fstrm)
-			{
-				fstrm << stream.str();
-			}
+			threads[1]->perform_task([output, time = cmds.cbegin()->first]()
+				{
+					const std::string out_file = (std::filesystem::current_path() / std::to_string(std::chrono::time_point_cast<std::chrono::milliseconds>(time).time_since_epoch().count())).replace_extension("log").string();
+
+					std::ofstream fstrm(out_file, std::ios::out);
+					if (fstrm)
+					{
+						fstrm << output;
+					}
+				}
+			);
 		}
 
 		m_block.reset();
