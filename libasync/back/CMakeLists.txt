@@ -29,7 +29,7 @@ target_precompile_headers(${PROJECT_NAME}
         pch.h
 )
 
-find_package(Boost REQUIRED COMPONENTS date_time)
+find_package(Boost REQUIRED COMPONENTS date_time headers)
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES} tasks_thread)
 

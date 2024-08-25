@@ -11,10 +11,10 @@ add_library(${PROJECT_NAME} SHARED
     libasync.cpp
 )
 
-set_target_properties(${PROJECT_NAME}
-    PROPERTIES
-        CXX_VISIBILITY_PRESET hidden
-)
+#set_target_properties(${PROJECT_NAME}
+ #   PROPERTIES
+#        CXX_VISIBILITY_PRESET hidden
+#)
 
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
