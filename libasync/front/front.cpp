@@ -47,7 +47,7 @@ public:
 			std::string str;
 			std::cin >> str;
 			if (m_fn_enter)
-				m_fn_enter(threads, str.c_str());
+				m_fn_enter(std::ref(threads), str.c_str());
 
 			if (m_break)
 				break;
