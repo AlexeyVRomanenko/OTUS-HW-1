@@ -41,8 +41,8 @@ add_subdirectory(tasks_thread)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
-        back
         front
+        back
         tasks_thread
 )
 
