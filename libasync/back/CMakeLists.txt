@@ -19,9 +19,9 @@ target_include_directories(${PROJECT_NAME}
         ../front/api
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}
     PRIVATE
-        #empty#
+        tasks_thread
 )
 
 target_precompile_headers(${PROJECT_NAME}
@@ -30,8 +30,8 @@ target_precompile_headers(${PROJECT_NAME}
 )
 
 find_package(Boost REQUIRED COMPONENTS date_time)
-target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES} tasks_thread)
+target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES} tasks_thread)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
