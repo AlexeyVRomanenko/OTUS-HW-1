@@ -24,10 +24,7 @@ target_precompile_headers(${PROJECT_NAME}
         pch.h
 )
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
-find_package(TBB REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE TBB::tbb ${Boost_LIBRARIES} tasks_thread)
+target_link_libraries(${PROJECT_NAME} tasks_thread)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")

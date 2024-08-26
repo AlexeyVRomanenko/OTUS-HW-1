@@ -1,6 +1,4 @@
 #include "pch.h"
-#include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
 #include <back/back.h>
 #include <front/ifront.h>
 #include <tasks_thread.h>
@@ -60,14 +58,14 @@ private:
 				}
 			}
 		}
-		else if (boost::iequals(cmd.c_str(), "exit"))
+		else if (cmd == "exit" || cmd == "EXIT")
 		{
 			if (!m_front.expired())
 			{
 				m_front.lock()->Break();
 			}
 		}
-		else if (boost::iequals(cmd.c_str(), "eof"))
+		else if (cmd == "EOF" || cmd == "eof")
 		{
 			//flush();
 		}

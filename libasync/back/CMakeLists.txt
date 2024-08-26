@@ -28,10 +28,7 @@ target_precompile_headers(${PROJECT_NAME}
     PUBLIC
         pch.h
 )
-
-find_package(Boost REQUIRED COMPONENTS date_time headers)
-target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES} tasks_thread)
+target_link_libraries(${PROJECT_NAME} PRIVATE tasks_thread)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
