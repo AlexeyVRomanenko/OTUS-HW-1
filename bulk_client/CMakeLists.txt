@@ -17,7 +17,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 #boost
-find_package(Boost REQUIRED COMPONENTS date_time asio)
+find_package(Boost REQUIRED COMPONENTS system)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 
