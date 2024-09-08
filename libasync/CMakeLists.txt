@@ -53,6 +53,11 @@ target_link_libraries(${PROJECT_NAME}
         tasks_thread
 )
 
+#boost
+find_package(Boost REQUIRED COMPONENTS date_time asio)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
+
 install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

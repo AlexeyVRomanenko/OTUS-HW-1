@@ -21,6 +21,6 @@ namespace libasync
 	using context_t = uint32_t;
 
 	LIBASYNC_EXPORT context_t connect(uint32_t N);
-	LIBASYNC_EXPORT bool receive(context_t, char* buff, size_t buff_size);
+	LIBASYNC_EXPORT bool receive(context_t, const char* buff, size_t buff_size);
 	LIBASYNC_EXPORT bool disconnect(context_t);
 }

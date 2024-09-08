@@ -3,7 +3,7 @@ name: 'C++ OTUS'
 on:
   push:
     branches:
-      - hw-09
+      - hw-10
   workflow_dispatch:
 
 jobs:
@@ -36,8 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./exe-0.1.${{ github.run_number }}-Linux.deb
-          asset_name: exe-0.1.${{ github.run_number }}-Linux.deb
+          asset_path: ./bulk_server-0.1.${{ github.run_number }}-Linux.deb
+          asset_name: bulk_server-0.1.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@v1.1.0

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include <front/front.h>
 #include <front/ifront.h>
-#include <cstring>
 
 class Front :
 	public front::IFront
@@ -11,7 +10,7 @@ public:
 	{
 	}
 
-	virtual void ConnectToEnter(const std::function<void(threads_pool& threads, const char*)>& fn) override
+	virtual void ConnectToEnter(const std::function<void(threads_pool&, const char*, bool&)>& fn) override
 	{
 		m_fn_enter = fn;
 	}
@@ -33,25 +32,22 @@ public:
 		}
 	}
 
-	virtual bool Run(threads_pool& threads, char* buff, size_t buff_size) override
+	virtual bool Run(threads_pool& threads, const char* buff, size_t buff_size) override
 	{
-		m_buff = buff;
-		m_buff_size = buff_size;
-		m_buff_used_size = 0;
-
-		while (true)
-		{
-			if (m_break)
-				break;
-
-			std::string str;
+		std::string str;
+		if (buff) {
+			str = buff;
+		}
+		else
 			std::cin >> str;
-			if (m_fn_enter)
-				m_fn_enter(std::ref(threads), str.c_str());
 
-			if (m_break)
-				break;
-		}		
+		if (m_fn_enter)
+		{
+			bool _break = false;
+			m_fn_enter(std::ref(threads), str.c_str(), _break);
+			if (_break)
+				return false;
+		}
 
 		return true;
 	}
@@ -63,7 +59,7 @@ public:
 
 private:
 	bool m_break = false;
-	std::function<void(threads_pool&, const char*)> m_fn_enter;
+	std::function<void(threads_pool&, const char*, bool&)> m_fn_enter;
 
 	std::mutex m_buff_mutex;
 	char* m_buff = 0;

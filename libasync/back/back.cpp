@@ -12,11 +12,10 @@ public:
 		m_N(N)
 	{
 		if (!m_front.expired())
-			m_front.lock()->ConnectToEnter(std::bind(&Back::OnEnter, this, std::placeholders::_1, std::placeholders::_2));
+			m_front.lock()->ConnectToEnter(std::bind(&Back::OnEnter, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 	}
 
-private:
-	void OnEnter(threads_pool& threads, const char* _cmd)
+	void OnEnter(threads_pool& threads, const char* _cmd, bool& _break) override
 	{
 		if (!_cmd)
 			return;
@@ -60,6 +59,7 @@ private:
 		}
 		else if (cmd == "exit" || cmd == "EXIT")
 		{
+			_break = true;
 			if (!m_front.expired())
 			{
 				m_front.lock()->Break();
@@ -67,7 +67,7 @@ private:
 		}
 		else if (cmd == "EOF" || cmd == "eof")
 		{
-			//flush();
+			_break = true;
 		}
 		else
 		{

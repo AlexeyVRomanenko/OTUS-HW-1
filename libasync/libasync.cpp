@@ -28,7 +28,7 @@ libasync::context_t libasync::connect(uint32_t N)
 	return context;
 }
 
-bool libasync::receive(context_t c, char* buff, size_t buff_size)
+bool libasync::receive(context_t c, const char* buff, size_t buff_size)
 {
 	return _instances[c].first->Run(_threads, buff, buff_size);
 }
