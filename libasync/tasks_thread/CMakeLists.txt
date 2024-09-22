@@ -5,6 +5,9 @@ project(tasks_thread VERSION ${PROJECT_VERSION})
 add_library(${PROJECT_NAME} INTERFACE
     tasks_thread.h
 )
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 target_include_directories(${PROJECT_NAME} INTERFACE .)
 
 set(CPACK_GENERATOR DEB)
