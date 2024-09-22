@@ -6,6 +6,8 @@ add_executable(${PROJECT_NAME}
     test.cpp
 )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
     CXX_STANDARD 20

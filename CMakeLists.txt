@@ -9,6 +9,8 @@ add_executable(${PROJECT_NAME}
     main.cpp
 )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 configure_file(version.h.in version.h)
 
 set_target_properties(${PROJECT_NAME}
