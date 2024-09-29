@@ -23,3 +23,11 @@ target_link_libraries(${PROJECT_NAME}
 set(CMAKE_FOLDER "${CMAKE_FOLDER}/prop_react")
 
 add_subdirectory(test)
+
+install(TARGETS prop_react
+    INCLUDES DESTINATION include
+)
+
+install(DIRECTORY include/prop_react/
+    DESTINATION include/prop_react
+)
