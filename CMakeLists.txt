@@ -24,7 +24,7 @@ set(CMAKE_FOLDER "${CMAKE_FOLDER}/prop_react")
 
 add_subdirectory(test)
 
-install(TARGETS prop_react
+install(TARGETS ${PROJECT_NAME}
     INCLUDES DESTINATION include
 )
 
