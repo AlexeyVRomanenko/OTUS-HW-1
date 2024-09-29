@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * @brief	prop_react
+ */
+
 #include <prop_react/detail/prop_simple.h>
 #include <prop_react/detail/prop_struct.h>
 
