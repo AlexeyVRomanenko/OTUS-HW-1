@@ -1,7 +1,10 @@
 #pragma once
 
-/**
- * @brief	prop_react
+/*!
+	 \brief React property
+				 library.
+
+	  PROP REACT
  */
 
 #include <prop_react/detail/prop_simple.h>
