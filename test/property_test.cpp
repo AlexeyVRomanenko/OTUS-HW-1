@@ -791,6 +791,7 @@ BOOST_AUTO_TEST_CASE(cast_test)
 		*int_prop_ptr = 0;
 		BOOST_CHECK(is_fired);
 	}
+	BOOST_CHECK(0);
 
 	{ // prop_vm use case
 		auto enum_prop_ptr = boost::make_shared<property<some_enum>>(some_enum::a);
