@@ -2,6 +2,9 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/variant.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <memory>
 
 #include <prop_react/property.h>
 
@@ -790,7 +793,7 @@ BOOST_AUTO_TEST_CASE(cast_test)
 	}
 
 	{ // prop_vm use case
-		auto enum_prop_ptr = boost::make_shared<property<some_enum> >(some_enum::a);
+		auto enum_prop_ptr = boost::make_shared<property<some_enum>>(some_enum::a);
 		auto int_prop_ptr = boost::reinterpret_pointer_cast<property<int>>(enum_prop_ptr);
 		BOOST_CHECK_EQUAL(int_prop_ptr->val(), 0);
 		*enum_prop_ptr = some_enum::b;
