@@ -31,3 +31,5 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY include/prop_react/
     DESTINATION include/prop_react
 )
+
+enable_testing()
