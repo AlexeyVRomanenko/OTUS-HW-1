@@ -1,4 +1,4 @@
-﻿prop_react library. v1.0
+﻿prop_react library v1.0
 
 Introduction
 
@@ -61,3 +61,7 @@ Requirements
 Test
 
 	See test\property_test.cpp
+
+License
+
+   - free
