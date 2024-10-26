@@ -1,6 +1,8 @@
 ﻿prop_react library. v1.0
 
-This is header-only library is designed to describe the interaction between different properties, which is commonly used in GUI design. The convenient syntax makes it easier to describe dependencies between different properties.
+Introduction
+
+This is с++ header-only library is designed to describe the interaction between different properties, which is commonly used in GUI design. The convenient syntax makes it easier to describe dependencies between different properties.
 
 Usage example 1:
 
@@ -44,3 +46,18 @@ Usage example 2:
 	second_prop = 30;
 	assert(first_prop.val() == 30);
 	assert(second_prop.val() == 30);
+
+Requirements
+
+ OS
+   - linux
+   - windows
+   - osx
+
+ complier
+   - C++ 20 or later(g++, clang++, msvc, etc.)	
+   - Use cmake 3.28 to build this project (Optional)
+
+Test
+
+	See test\property_test.cpp
