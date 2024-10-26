@@ -57,6 +57,7 @@ Requirements
  complier
    - C++ 20 or later (g++, clang++, msvc, etc.)	
    - Use cmake 3.28 to build this project (Optional)
+   - Dependencies: boost. Use vcpkg or conan to get it.
 
 Test
 
