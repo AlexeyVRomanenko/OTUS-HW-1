@@ -50,9 +50,9 @@ Usage example 2:
 Requirements
 
  OS
-   - linux
-   - windows
-   - osx
+   - Linux
+   - Windows
+   - MacOS
 
  complier
    - C++ 20 or later (g++, clang++, msvc, etc.)	
@@ -64,4 +64,4 @@ Test
 
 License
 
-   - free
+   - Free
