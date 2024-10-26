@@ -55,7 +55,7 @@ Requirements
    - osx
 
  complier
-   - C++ 20 or later(g++, clang++, msvc, etc.)	
+   - C++ 20 or later (g++, clang++, msvc, etc.)	
    - Use cmake 3.28 to build this project (Optional)
 
 Test
